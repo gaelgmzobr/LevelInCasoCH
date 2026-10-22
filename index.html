@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
+<title>LevelIn App</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: ficha del proyecto a la izquierda + teléfono interactivo a la derecha; en móvil la app ocupa toda la pantalla */
+:root{
+  --bg:#EEF0F6; --panel:#FFFFFF; --ink:#141A33; --muted:#5D6482; --line:#DCE0EC;
+  --brand:#2B2FA8; --brand-soft:#E5E6FB; --gold:#E8A317; --gold-soft:#FFF2D6;
+  --ok:#14866D; --ok-soft:#DDF3EC; --warn:#C2410C; --warn-soft:#FDE7DA;
+  --cult:#7C3AED; --cult-soft:#EFE7FE; --well:#0E8BA8; --well-soft:#DDF2F7;
+  --phone:#0E1226; --screen:#F7F8FC; --card:#FFFFFF;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Figtree", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0B0E1C; --panel:#141932; --ink:#EEF0FA; --muted:#A3A9C6; --line:#2A3152;
+  --brand:#8E92FF; --brand-soft:#23275A; --gold:#F5B83A; --gold-soft:#3A2E12;
+  --ok:#3CCB9F; --ok-soft:#123A30; --warn:#FB8A4F; --warn-soft:#3D2114;
+  --cult:#B28CFF; --cult-soft:#2C1F4F; --well:#4CC6E2; --well-soft:#10323C;
+  --phone:#000000; --screen:#10142A; --card:#1A2040; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B0E1C; --panel:#141932; --ink:#EEF0FA; --muted:#A3A9C6; --line:#2A3152;
+  --brand:#8E92FF; --brand-soft:#23275A; --gold:#F5B83A; --gold-soft:#3A2E12;
+  --ok:#3CCB9F; --ok-soft:#123A30; --warn:#FB8A4F; --warn-soft:#3D2114;
+  --cult:#B28CFF; --cult-soft:#2C1F4F; --well:#4CC6E2; --well-soft:#10323C;
+  --phone:#000000; --screen:#10142A; --card:#1A2040; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding-block:32px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:48px;align-items:start}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0}
+.info{display:flex;flex-direction:column;gap:22px;min-width:0;padding-top:12px}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.info h1{font-size:clamp(38px,5vw,60px);line-height:1;letter-spacing:-.02em;font-weight:800}
+.info h1 span{color:var(--brand)}
+.lead{font-size:17px;max-width:58ch;color:var(--ink)}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-width:620px}
+.fact{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
+.fact b{display:block;font-family:var(--f-display);font-size:22px}
+.fact small{color:var(--muted);font-size:12.5px;line-height:1.35;display:block}
+.pillars{display:flex;flex-direction:column;gap:10px;max-width:620px}
+.pill-row{display:flex;gap:12px;align-items:flex-start}
+.dot{width:10px;height:10px;border-radius:50%;margin-top:7px;flex:none}
+.guide{font-size:13.5px;color:var(--muted);max-width:60ch}
+.credits{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;max-width:620px}
+
+/* Teléfono */
+.phone{width:400px;max-width:100%;height:820px;background:var(--phone);border-radius:46px;padding:12px;box-shadow:0 30px 60px -20px rgba(20,26,51,.45);position:sticky;top:max(20px,env(safe-area-inset-top,0px))}
+.screen{background:var(--screen);border-radius:36px;height:100%;overflow:hidden;display:flex;flex-direction:column;position:relative}
+.status{display:flex;justify-content:space-between;padding:12px 26px 4px;font:600 12px var(--f-mono);color:var(--ink)}
+.appbar{display:flex;align-items:center;justify-content:space-between;padding:6px 20px 10px}
+.logo{font:800 22px var(--f-display);letter-spacing:-.02em}
+.logo span{color:var(--brand)}
+.wallet{display:flex;align-items:center;gap:6px;background:var(--gold-soft);color:var(--ink);border-radius:99px;padding:5px 11px;font:700 13px var(--f-mono)}
+.coin{width:16px;height:16px;border-radius:50%;background:var(--gold);display:inline-grid;place-items:center;color:#2B1D00;font:800 9px var(--f-body)}
+.view{flex:1;overflow-y:auto;padding:4px 18px 72px;display:flex;flex-direction:column;gap:14px}
+.view::-webkit-scrollbar{width:0}
+.nav{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);background:var(--card);padding:8px 6px 14px}
+.nav button{background:none;border:0;color:var(--muted);font:600 11px var(--f-body);display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;cursor:pointer;border-radius:12px}
+.nav button svg{width:22px;height:22px}
+.nav button[aria-current="page"]{color:var(--brand)}
+.nav button:focus-visible,button:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px}
+.hero{background:var(--brand);color:#fff;border:0;border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.hero .who{display:flex;gap:12px;align-items:center}
+.avatar{width:44px;height:44px;border-radius:50%;background:var(--gold);color:#2B1D00;display:grid;place-items:center;font:800 16px var(--f-display);flex:none}
+.hero small{opacity:.85;font-size:12.5px}
+.lvl{font:800 26px var(--f-display);letter-spacing:-.01em}
+.bar{height:10px;border-radius:99px;background:rgba(255,255,255,.25);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--gold);border-radius:99px;transition:width .6s ease}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.sec-t{font:700 16px var(--f-display);display:flex;justify-content:space-between;align-items:baseline}
+.sec-t a,.link{font:600 12.5px var(--f-body);color:var(--brand);cursor:pointer;background:none;border:0;padding:0}
+.mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mini{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;text-align:center}
+.mini b{font:700 18px var(--f-mono);display:block}
+.mini small{font-size:11px;color:var(--muted)}
+.tag{display:inline-flex;align-items:center;gap:4px;font:700 10.5px var(--f-body);letter-spacing:.04em;text-transform:uppercase;border-radius:99px;padding:3px 8px}
+.t-kpi{background:var(--brand-soft);color:var(--brand)}
+.t-cult{background:var(--cult-soft);color:var(--cult)}
+.t-well{background:var(--well-soft);color:var(--well)}
+.t-gold{background:var(--gold-soft);color:var(--ink)}
+.t-ok{background:var(--ok-soft);color:var(--ok)}
+.t-warn{background:var(--warn-soft);color:var(--warn)}
+.chal{display:flex;flex-direction:column;gap:8px}
+.chal h4{margin:0;font:700 14.5px var(--f-body)}
+.chal p{margin:0;font-size:12.5px;color:var(--muted)}
+.chal .prog{height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.chal .prog i{display:block;height:100%;background:var(--brand);transition:width .5s}
+.chal.done .prog i{background:var(--ok)}
+.btn{border:0;border-radius:12px;padding:9px 14px;font:700 13px var(--f-body);cursor:pointer;background:var(--brand);color:#fff}
+.btn.ghost{background:var(--brand-soft);color:var(--brand)}
+.btn.gold{background:var(--gold);color:#2B1D00}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.tabs::-webkit-scrollbar{height:0}
+.tabs button{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:7px 12px;font:600 12.5px var(--f-body);cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--ink);color:var(--screen);border-color:var(--ink)}
+.kpi{display:flex;flex-direction:column;gap:6px}
+.kpi .track{position:relative;height:10px;border-radius:99px;background:var(--line)}
+.kpi .track i{position:absolute;left:0;top:0;bottom:0;border-radius:99px}
+.kpi .track em{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.ring{width:118px;height:118px;flex:none}
+.reward{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center}
+.ricon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font:800 15px var(--f-display)}
+.reward h4{margin:0;font:700 14px var(--f-body)}
+.reward p{margin:0;font-size:12px;color:var(--muted)}
+.gens{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap}
+.gen{font:600 10px var(--f-body);border:1px solid var(--line);border-radius:6px;padding:1px 5px;color:var(--muted)}
+.locked{opacity:.6}
+.path{display:flex;flex-direction:column;gap:0}
+.step{display:grid;grid-template-columns:34px 1fr;gap:12px}
+.step .rail{display:flex;flex-direction:column;align-items:center}
+.step .node{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:800 12px var(--f-mono);border:2px solid var(--line);background:var(--card);color:var(--muted)}
+.step .line{flex:1;width:2px;background:var(--line);min-height:18px}
+.step.past .node{background:var(--ok);border-color:var(--ok);color:#fff}
+.step.now .node{background:var(--brand);border-color:var(--brand);color:#fff;box-shadow:0 0 0 5px var(--brand-soft)}
+.step .body{padding-bottom:16px}
+.step h4{margin:0;font:700 14.5px var(--f-body)}
+.step p{margin:2px 0 0;font-size:12.5px;color:var(--muted)}
+.kudo{display:flex;gap:10px;align-items:flex-start}
+.kudo .avatar{width:34px;height:34px;font-size:13px}
+.kudo p{margin:0;font-size:13px}
+.kudo small{color:var(--muted);font-size:11.5px}
+.fab{position:absolute;right:18px;bottom:86px;background:var(--gold);color:#2B1D00;border:0;border-radius:99px;padding:12px 16px;font:800 13px var(--f-body);box-shadow:0 10px 24px -8px rgba(0,0,0,.4);cursor:pointer;display:flex;gap:6px;align-items:center}
+.sheet{position:absolute;inset:0;background:rgba(8,10,24,.45);display:flex;align-items:flex-end;z-index:5}
+.sheet .inner{background:var(--card);width:100%;border-radius:24px 24px 0 0;padding:18px 18px 24px;display:flex;flex-direction:column;gap:12px;max-height:85%;overflow-y:auto}
+.sheet label{font:600 12.5px var(--f-body);color:var(--muted)}
+.sheet select,.sheet textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px;font:500 14px var(--f-body);background:var(--screen);color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{border:1px solid var(--line);background:var(--screen);color:var(--ink);border-radius:99px;padding:6px 10px;font:600 12px var(--f-body);cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--cult);color:#fff;border-color:var(--cult)}
+.toast{position:absolute;left:18px;right:18px;top:64px;background:var(--ink);color:var(--screen);border-radius:14px;padding:12px 14px;font:600 13px var(--f-body);z-index:6;display:flex;gap:10px;align-items:center;transform:translateY(-12px);opacity:0;transition:.25s;pointer-events:none}
+.toast.show{transform:none;opacity:1}
+.note{font-size:11.5px;color:var(--muted);line-height:1.4}
+.team{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;font-size:13.5px}
+.team .pos{font:700 13px var(--f-mono);color:var(--muted)}
+.team .tb{height:6px;border-radius:99px;background:var(--line);margin-top:4px;overflow:hidden}
+.team .tb i{display:block;height:100%;background:var(--cult)}
+.me{font-weight:700}
+
+@media (max-width:900px){
+  .wrap{grid-template-columns:1fr;gap:28px;padding-block:20px 32px}
+  .phone{position:static;margin:0 auto}
+}
+@media (max-width:460px){
+  .wrap{padding-left:0;padding-right:0;padding-block:0 24px}
+  .info{padding:20px max(16px,env(safe-area-inset-left,0px)) 0 max(16px,env(safe-area-inset-right,0px));order:2}
+  .phone{order:1;width:100%;border-radius:0;padding:0;height:min(820px,100svh);box-shadow:none}
+  .screen{border-radius:0}
+  .facts{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <section class="info" aria-label="Acerca del prototipo">
+    <div class="eyebrow">Situación problema · Etapa 3 · Recompensa total</div>
+    <h1>Level<span>In</span></h1>
+    <p class="lead">Prototipo de app de recompensa total para el puesto de <b>Especialista de Soporte al Miembro</b> en Atención al Cliente de LinkedIn. Cada caso bien resuelto, cada kudos y cada pausa de bienestar suma puntos que se convierten en premios, días libres, bonos y pasos reales en la carrera.</p>
+    <div class="facts">
+      <div class="fact"><b>3</b><small>pilares que se reconocen: cultura, KPIs del puesto y bienestar</small></div>
+      <div class="fact"><b>4</b><small>niveles ligados a la ruta de carrera, de Conector a Embajador</small></div>
+      <div class="fact"><b class="num">$28.6k</b><small>costo anual estimado por colaborador en el piloto de 40 personas</small></div>
+    </div>
+    <div class="pillars">
+      <div class="pill-row"><span class="dot" style="background:var(--cult)"></span><div><b>Cultura.</b> Kudos entre compañeros etiquetados con los cinco valores de LinkedIn. Las insignias se ganan viviendo los valores, no solo diciéndolos.</div></div>
+      <div class="pill-row"><span class="dot" style="background:var(--brand)"></span><div><b>Desempeño.</b> Los mismos KPIs de la Etapa 2 (productividad, calidad, tiempos de respuesta, registro y desarrollo), con el balance 60% resultados y 40% proceso.</div></div>
+      <div class="pill-row"><span class="dot" style="background:var(--well)"></span><div><b>Bienestar.</b> Pausas activas, InDay, voluntariado y retos de desconexión fuera del horario laboral.</div></div>
+    </div>
+    <p class="guide">Cómo probarlo: en <b>Retos</b> toca "Registrar avance" para ganar puntos y ver cómo sube el nivel. En <b>Premios</b> canjea con tu saldo; los premios de mediano y largo plazo se desbloquean por nivel. En <b>Carrera</b> se ve qué puesto abre cada nivel. El botón dorado envía un kudos. Todos los datos son de ejemplo.</p>
+    <p class="credits">Dimensión estratégica del capital humano · Damian Aranda, Eduardo Soto, Emiliano Padilla y Gael Gómez. Prototipo académico; no es un producto oficial de LinkedIn.</p>
+  </section>
+
+  <div class="phone" role="application" aria-label="Prototipo de la app LevelIn">
+    <div class="screen">
+      <div class="status"><span>9:41</span><span>LevelIn</span><span>100%</span></div>
+      <div class="appbar">
+        <div class="logo">Level<span>In</span></div>
+        <div class="wallet" title="Saldo canjeable"><span class="coin">P</span><span id="wallet">0</span></div>
+      </div>
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+      <main class="view" id="view"></main>
+      <button class="fab" id="fab" type="button">+ Kudos</button>
+      <nav class="nav" aria-label="Secciones">
+        <button type="button" data-v="home" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Inicio</button>
+        <button type="button" data-v="retos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 6 6 .9-4.5 4.3 1 6.3L12 16.8 6.5 19.5l1-6.3L3 8.9 9 8z"/></svg>Retos</button>
+        <button type="button" data-v="kpi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Métricas</button>
+        <button type="button" data-v="premios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8S10 3 7.5 3 5 6 7 8M12 8s2-5 4.5-5S19 6 17 8"/></svg>Premios</button>
+        <button type="button" data-v="carrera"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20l5-6 4 3 7-9"/><path d="M15 8h5v5"/></svg>Carrera</button>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+const LEVELS=[
+ {n:1,name:"Conector",min:0,role:"Especialista de Soporte I",desc:"Primeros meses. Aprendes el sistema de casos y los valores del equipo."},
+ {n:2,name:"Aliado",min:1500,role:"Especialista de Soporte II",desc:"Desbloquea premios de mediano plazo y el bono trimestral."},
+ {n:3,name:"Mentor",min:4000,role:"Especialista Senior / Mentor de nuevos ingresos",desc:"Desbloquea certificación pagada, shadowing y elegibilidad al bono anual."},
+ {n:4,name:"Embajador",min:7500,role:"Candidato a Team Lead, QA o Trust & Safety",desc:"Recomendación formal de RH para promoción o movilidad interna, beca y Experiencia Embajador."}
+];
+const st={xp:2340,wallet:1180,view:"home",tab:"Semanal",kudos:[
+ {from:"Diego M.",val:"We trust and care about each other",msg:"Gracias por quedarte a revisar conmigo el caso de la cuenta Premium bloqueada.",t:"hace 2 h"},
+ {from:"Sofía L.",val:"We put members first",msg:"Tu respuesta al usuario de Recruiter fue clarísima, la usé como plantilla.",t:"ayer"}
+],claimed:{}};
+const CH=[
+ {id:"c1",p:"Semanal",pil:"kpi",t:"Caso bien cerrado",d:"Cero casos reabiertos esta semana.",ind:"Reapertura de casos",goal:5,cur:3,pts:80},
+ {id:"c2",p:"Semanal",pil:"kpi",t:"SLA en verde",d:"90% o más de tus casos dentro del tiempo de respuesta.",ind:"Cumplimiento de SLA",goal:5,cur:4,pts:100},
+ {id:"c3",p:"Semanal",pil:"cult",t:"Kudos con valor",d:"Envía 2 kudos etiquetados con un valor de LinkedIn.",ind:"Kudos enviados",goal:2,cur:1,pts:40},
+ {id:"c4",p:"Semanal",pil:"well",t:"Pausa activa",d:"Registra 3 pausas activas de 10 minutos.",ind:"Pausas registradas",goal:3,cur:1,pts:30},
+ {id:"c5",p:"Mensual",pil:"kpi",t:"Members First del mes",d:"Satisfacción del usuario (CSAT) de 92% o más.",ind:"CSAT mensual",goal:4,cur:2,pts:250},
+ {id:"c6",p:"Mensual",pil:"kpi",t:"Aprende algo nuevo",d:"Termina 2 cursos de LinkedIn Learning ligados a tu puesto.",ind:"Cursos completados",goal:2,cur:1,pts:150},
+ {id:"c7",p:"Mensual",pil:"cult",t:"InDay con propósito",d:"Participa en InDay o en una actividad de voluntariado.",ind:"Participación",goal:1,cur:0,pts:120},
+ {id:"c8",p:"Mensual",pil:"well",t:"Desconexión sana",d:"Cero mensajes de trabajo fuera de tu horario.",ind:"Días sin mensajes fuera de horario",goal:4,cur:3,pts:80},
+ {id:"c9",p:"Trimestral",pil:"cult",t:"Mentor por un trimestre",d:"Acompaña a un nuevo ingreso en sus primeros 90 días.",ind:"Sesiones de mentoría",goal:6,cur:2,pts:500},
+ {id:"c10",p:"Trimestral",pil:"kpi",t:"Calidad sostenida",d:"Reapertura menor a 5% tres meses seguidos.",ind:"Meses en meta",goal:3,cur:2,pts:600},
+ {id:"c11",p:"Trimestral",pil:"kpi",t:"Certifícate",d:"Obtén una certificación en servicio, datos o idiomas.",ind:"Avance del curso",goal:4,cur:1,pts:400},
+ {id:"c12",p:"Anual",pil:"kpi",t:"Proyecto de mejora",d:"Propón e implementa una mejora que reduzca tiempos de respuesta.",ind:"Etapas del proyecto",goal:4,cur:1,pts:1200},
+ {id:"c13",p:"Anual",pil:"cult",t:"Embajador de cultura",d:"Recibe 30 kudos que cubran al menos 3 valores distintos.",ind:"Kudos recibidos",goal:30,cur:17,pts:800}
+];
+const RW=[
+ {id:"r1",p:"Corto",kind:"F",t:"Vale de $250",d:"Despensa, tarjeta de regalo o crédito en apps.",cost:500,lvl:1,g:["X","Mill.","Cent."],c:"V"},
+ {id:"r2",p:"Corto",kind:"N",t:"Tarde libre de bienestar",d:"Medio día para ti, acordado con tu líder.",cost:700,lvl:1,g:["X","Mill.","Cent."],c:"T"},
+ {id:"r3",p:"Corto",kind:"N",t:"Café con un director",d:"30 minutos de conversación de carrera.",cost:300,lvl:1,g:["Mill.","Cent."],c:"C"},
+ {id:"r4",p:"Corto",kind:"N",t:"Comida con tu líder",d:"Premio automático para Members First del mes.",cost:0,lvl:1,g:["X","Mill."],c:"L",auto:true},
+ {id:"r5",p:"Mediano",kind:"F",t:"Bono trimestral",d:"5% del sueldo del trimestre si tu índice LevelIn es 90 o más.",cost:0,lvl:2,g:["X","Mill."],c:"$",auto:true},
+ {id:"r6",p:"Mediano",kind:"N",t:"Día libre adicional",d:"Un día extra, además de tus vacaciones de ley.",cost:1200,lvl:2,g:["X","Mill.","Cent."],c:"D"},
+ {id:"r7",p:"Mediano",kind:"F",t:"Certificación pagada",d:"Hasta $6,000 en un curso o examen externo.",cost:1500,lvl:3,g:["Mill.","Cent."],c:"E"},
+ {id:"r8",p:"Mediano",kind:"N",t:"Shadowing en otra área",d:"Una semana con Producto, QA o Trust & Safety.",cost:900,lvl:3,g:["Mill.","Cent."],c:"S"},
+ {id:"r9",p:"Largo",kind:"F",t:"Bono anual de alto desempeño",d:"Hasta un mes de sueldo para el 15% con mejor índice anual.",cost:0,lvl:3,g:["X","Mill."],c:"$",auto:true},
+ {id:"r10",p:"Largo",kind:"F",t:"Beca educativa",d:"Hasta $20,000 para inglés, diplomado o maestría.",cost:3000,lvl:4,g:["X","Mill.","Cent."],c:"B"},
+ {id:"r11",p:"Largo",kind:"N",t:"Experiencia Embajador",d:"Viaje a un evento de LinkedIn o a otra oficina.",cost:3500,lvl:4,g:["Mill.","Cent."],c:"✈"},
+ {id:"r12",p:"Largo",kind:"N",t:"Recomendación para promoción",d:"Carta formal de RH y prioridad en vacantes internas.",cost:0,lvl:4,g:["X","Mill.","Cent."],c:"R",auto:true}
+];
+const VALUES=["We put members first","We trust and care about each other","We are open, honest and constructive","We act as One LinkedIn","We embody diversity, inclusion and belonging"];
+const PIL={kpi:["Desempeño","t-kpi"],cult:["Cultura","t-cult"],well:["Bienestar","t-well"]};
+const $=s=>document.querySelector(s);
+const fmt=n=>n.toLocaleString("es-MX");
+function lvl(){let L=LEVELS[0];for(const l of LEVELS){if(st.xp>=l.min)L=l}return L}
+function next(){const L=lvl();return LEVELS.find(l=>l.n===L.n+1)}
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove("show"),2200)}
+function save(){try{localStorage.setItem("levelin",JSON.stringify({xp:st.xp,wallet:st.wallet,claimed:st.claimed,cur:CH.map(c=>c.cur),kudos:st.kudos}))}catch(e){}}
+function load(){try{const d=JSON.parse(localStorage.getItem("levelin")||"null");if(!d)return;st.xp=d.xp;st.wallet=d.wallet;st.claimed=d.claimed||{};if(d.cur)d.cur.forEach((v,i)=>{if(CH[i])CH[i].cur=v});if(d.kudos)st.kudos=d.kudos}catch(e){}}
+function addPts(p,why){const before=lvl().n;st.xp+=p;st.wallet+=p;const after=lvl();save();
+ if(after.n>before)toast("Subiste a nivel "+after.n+": "+after.name+". Se desbloquearon nuevos premios.");else toast("+"+p+" puntos · "+why)}
+
+function heroCard(){const L=lvl(),N=next();const pct=N?Math.round((st.xp-L.min)/(N.min-L.min)*100):100;
+ return `<div class="hero"><div class="who"><div class="avatar">AR</div><div><b>Andrea Ruiz</b><br><small>${L.role} · Equipo 3</small></div></div>
+ <div class="row"><div><small>Nivel ${L.n}</small><div class="lvl">${L.name}</div></div><div style="text-align:right"><small>Puntos acumulados</small><div class="lvl num">${fmt(st.xp)}</div></div></div>
+ <div class="bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct}%"></i></div>
+ <small>${N?`Te faltan <b class="num">${fmt(N.min-st.xp)}</b> puntos para ${N.name}`:"Nivel máximo alcanzado"}</small></div>`}
+
+function chalCard(c){const done=c.cur>=c.goal;const P=PIL[c.pil];
+ return `<div class="card chal ${done?"done":""}"><div class="row"><span class="tag ${P[1]}">${P[0]}</span><span class="tag t-gold">+${c.pts} pts</span></div>
+ <h4>${c.t}</h4><p>${c.d}</p><div class="row"><p>Indicador: ${c.ind}</p><p class="num">${c.cur}/${c.goal}</p></div>
+ <div class="prog"><i style="width:${Math.min(100,c.cur/c.goal*100)}%"></i></div>
+ <div class="row"><span class="note">${{Semanal:"Corto plazo",Mensual:"Corto plazo",Trimestral:"Mediano plazo",Anual:"Largo plazo"}[c.p]}</span>
+ ${done?'<span class="tag t-ok">Completado</span>':`<button class="btn ghost" type="button" data-adv="${c.id}">Registrar avance</button>`}</div></div>`}
+
+function home(){const act=CH.filter(c=>c.cur<c.goal).slice(0,2);
+ return heroCard()+`
+ <div class="mini-grid"><div class="mini"><b>6</b><small>semanas de racha</small></div><div class="mini"><b>${CH.filter(c=>c.cur>=c.goal).length}</b><small>retos logrados</small></div><div class="mini"><b>88</b><small>índice LevelIn</small></div></div>
+ <div class="sec-t">Retos para hoy <button class="link" type="button" data-go="retos">Ver todos</button></div>
+ ${act.map(chalCard).join("")}
+ <div class="sec-t">Kudos recibidos</div>
+ <div class="card" style="display:flex;flex-direction:column;gap:12px">${st.kudos.slice(0,3).map(k=>`<div class="kudo"><div class="avatar" style="background:var(--cult-soft);color:var(--cult)">${k.from.split(" ").map(x=>x[0]).join("")}</div><div><p><b>${k.from}</b> ${k.msg}</p><span class="tag t-cult">${k.val}</span> <small>${k.t}</small></div></div>`).join("")}</div>
+ <div class="sec-t">Ranking por equipos</div>
+ <div class="card" style="display:flex;flex-direction:column;gap:10px">
+ ${[["Equipo 1",8920],["Equipo 3",8610],["Equipo 4",7740],["Equipo 2",7320]].map((t,i)=>`<div class="team ${t[0]==="Equipo 3"?"me":""}"><span class="pos">${i+1}</span><div>${t[0]}<div class="tb"><i style="width:${t[1]/89.2}%"></i></div></div><span class="num">${fmt(t[1])}</span></div>`).join("")}
+ <p class="note">El ranking es por equipo, no individual. Tus puntos personales solo los ven tú y tu líder.</p></div>`}
+
+function retos(){const tabs=["Semanal","Mensual","Trimestral","Anual"];
+ return `<div class="sec-t">Retos</div><div class="tabs" role="group" aria-label="Plazo">${tabs.map(t=>`<button type="button" data-tab="${t}" aria-pressed="${st.tab===t}">${t}</button>`).join("")}</div>
+ ${CH.filter(c=>c.p===st.tab).map(chalCard).join("")}
+ <p class="note">Los avances de desempeño se registran solos desde el sistema de casos y LinkedIn Learning. En este prototipo se simulan con el botón.</p>`}
+
+function kpiRow(name,val,goal,inv){const ok=inv?val<=goal:val>=goal;const scale=inv?Math.min(100,val*10):val;const gpos=inv?goal*10:goal;
+ return `<div class="kpi"><div class="row"><span>${name}</span><span class="num" style="white-space:nowrap;font-size:13px"><b style="color:var(${ok?"--ok":"--warn"})">${val}%</b> / meta ${inv?"≤":""}${goal}%</span></div>
+ <div class="track"><i style="width:${scale}%;background:var(${ok?"--ok":"--warn"})"></i><em style="left:${gpos}%"></em></div></div>`}
+function kpi(){const R=[92,88,85],P=[98,80,90];
+ const res=Math.round((92*.3+88*.3+85*.4)), pro=Math.round((98+80+90)/3); const idx=Math.round(res*.6+pro*.4);
+ const C=2*Math.PI*48, off=C*(1-idx/100);
+ return `<div class="card" style="display:flex;gap:14px;align-items:center">
+ <svg class="ring" viewBox="0 0 118 118" aria-label="Índice ${idx} de 100"><circle cx="59" cy="59" r="48" fill="none" stroke="var(--line)" stroke-width="12"/><circle cx="59" cy="59" r="48" fill="none" stroke="var(--brand)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${off}" transform="rotate(-90 59 59)"/><text x="59" y="58" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="28" fill="var(--ink)">${idx}</text><text x="59" y="77" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="Figtree, sans-serif">de 100</text></svg>
+ <div><b style="font-family:var(--f-display);font-size:17px">Índice LevelIn · Octubre</b><p class="note" style="margin:4px 0 0">60% resultados (${res}) y 40% proceso (${pro}). Con 90 o más calificas al bono trimestral.</p></div></div>
+ <div class="sec-t">Resultados · 60%</div>
+ <div class="card" style="display:flex;flex-direction:column;gap:14px">${kpiRow("Productividad (casos resueltos vs meta)",92,90)}${kpiRow("Calidad (CSAT del usuario)",88,92)}${kpiRow("Casos dentro del tiempo de respuesta",85,90)}</div>
+ <div class="sec-t">Proceso · 40%</div>
+ <div class="card" style="display:flex;flex-direction:column;gap:14px">${kpiRow("Registro correcto de casos",98,98)}${kpiRow("Trabajo en equipo (evaluación de pares)",80,80)}${kpiRow("Desarrollo (plan de LinkedIn Learning)",90,85)}</div>
+ <div class="card" style="background:var(--warn-soft);border-color:transparent"><b>Siguiente paso sugerido</b><p class="note" style="margin:4px 0 0;color:var(--ink)">Tu tiempo de respuesta está 5 puntos abajo de la meta. El reto "SLA en verde" vale 100 puntos y tu líder ya agendó la revisión de casos difíciles del jueves.</p></div>`}
+
+function premios(){const L=lvl();const groups=[["Corto","Corto plazo · menos de 3 meses"],["Mediano","Mediano plazo · 3 a 6 meses"],["Largo","Largo plazo · 6 a 12 meses"]];
+ return `<div class="card row" style="background:var(--gold-soft);border-color:transparent"><div><small class="note">Saldo para canjear</small><div class="lvl num" style="font-size:24px">${fmt(st.wallet)} pts</div></div><span class="tag t-kpi">Nivel ${L.n} · ${L.name}</span></div>`+
+ groups.map(([p,lab])=>`<div class="sec-t">${lab}</div>`+RW.filter(r=>r.p===p).map(r=>{const lock=L.n<r.lvl;const got=st.claimed[r.id];
+  const btn=lock?`<span class="tag t-warn">Nivel ${r.lvl}</span>`:r.auto?`<span class="tag t-ok">Por logro</span>`:got?`<span class="tag t-ok">Canjeado</span>`:`<button class="btn gold" type="button" data-buy="${r.id}" ${st.wallet<r.cost?"disabled":""}>${fmt(r.cost)}</button>`;
+  return `<div class="card reward ${lock?"locked":""}"><div class="ricon" style="background:${r.kind==="F"?"var(--gold-soft)":"var(--cult-soft)"};color:${r.kind==="F"?"var(--ink)":"var(--cult)"}">${r.c}</div>
+  <div><h4>${r.t}</h4><p>${r.d}</p><div class="gens"><span class="gen">${r.kind==="F"?"Financiero":"No financiero"}</span>${r.g.map(x=>`<span class="gen">${x}</span>`).join("")}</div></div>${btn}</div>`}).join("")).join("")+
+ `<p class="note">Los bonos en efectivo se pagan por nómina con su retención de ISR. Los vales se entregan dentro de los límites de previsión social.</p>`}
+
+function carrera(){const L=lvl();
+ return `<div class="sec-t">Tu ruta de carrera</div><div class="card"><div class="path">`+
+ LEVELS.map((l,i)=>{const cls=l.n<L.n?"past":l.n===L.n?"now":"";return `<div class="step ${cls}"><div class="rail"><div class="node">${l.n}</div>${i<LEVELS.length-1?'<div class="line"></div>':""}</div><div class="body"><h4>${l.name} · <span class="num" style="font-weight:500;color:var(--muted)">${fmt(l.min)}+ pts</span></h4><p><b style="color:var(--ink)">${l.role}</b></p><p>${l.desc}</p></div></div>`}).join("")+
+ `</div></div><div class="sec-t">Insignias de valores</div><div class="card" style="display:flex;flex-direction:column;gap:8px">`+
+ VALUES.map((v,i)=>{const n=[9,6,4,2,1][i];return `<div class="row"><span style="font-size:13px">${v}</span><span class="tag ${n>=5?"t-cult":"t-gold"}">${n>=5?"Insignia":"En progreso"} · ${n}/5</span></div>`}).join("")+
+ `</div><p class="note">Ningún puesto se asigna solo por puntos. El nivel Embajador da una recomendación formal y prioridad en la convocatoria interna; la decisión final sigue los criterios de capacitación y antigüedad del proceso de RH.</p>`}
+
+function render(){const v=$("#view");v.innerHTML={home,retos,kpi,premios,carrera}[st.view]();v.scrollTop=0;
+ $("#wallet").textContent=fmt(st.wallet);
+ document.querySelectorAll(".nav button").forEach(b=>b.setAttribute("aria-current",b.dataset.v===st.view?"page":"false"));
+ $("#fab").hidden=!(st.view==="home"||st.view==="carrera")}
+function go(v){st.view=v;render()}
+
+document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;
+ if(t.dataset.v)go(t.dataset.v);
+ if(t.dataset.go)go(t.dataset.go);
+ if(t.dataset.tab){st.tab=t.dataset.tab;render()}
+ if(t.dataset.adv){const c=CH.find(x=>x.id===t.dataset.adv);c.cur=Math.min(c.goal,c.cur+1);
+  if(c.cur>=c.goal)addPts(c.pts,c.t);else{save();toast("Avance registrado: "+c.cur+"/"+c.goal)}render()}
+ if(t.dataset.buy){const r=RW.find(x=>x.id===t.dataset.buy);if(st.wallet>=r.cost){st.wallet-=r.cost;st.claimed[r.id]=1;save();toast("Canjeaste: "+r.t+". Tu líder recibió la solicitud.");render()}}
+});
+$("#fab").addEventListener("click",openKudos);
+function openKudos(){const s=document.createElement("div");s.className="sheet";let val=VALUES[0];
+ s.innerHTML=`<div class="inner" role="dialog" aria-label="Enviar kudos"><div class="row"><b style="font-family:var(--f-display);font-size:18px">Enviar kudos</b><button class="link" type="button" id="kx">Cerrar</button></div>
+ <label for="kto">Para</label><select id="kto"><option>Diego Martínez · Equipo 3</option><option>Sofía López · Equipo 3</option><option>Carlos Peña · Equipo 1</option><option>Mariana Ortiz · Equipo 4</option></select>
+ <label>¿Qué valor vivió?</label><div class="chips" id="kv">${VALUES.map((v,i)=>`<button type="button" aria-pressed="${i===0}" data-val="${v}">${v}</button>`).join("")}</div>
+ <label for="kmsg">Mensaje</label><textarea id="kmsg" rows="3">Gracias por ayudarme con el caso de la suscripción Premium, el usuario quedó feliz.</textarea>
+ <button class="btn" type="button" id="ksend">Enviar kudos · +20 pts para ambos</button>
+ <p class="note">Cada persona puede enviar hasta 5 kudos por semana para que sigan teniendo valor.</p></div>`;
+ $(".screen").appendChild(s);
+ s.addEventListener("click",e=>{if(e.target===s||e.target.id==="kx")s.remove();
+  const b=e.target.closest("[data-val]");if(b){val=b.dataset.val;s.querySelectorAll("[data-val]").forEach(x=>x.setAttribute("aria-pressed",x===b))}
+  if(e.target.id==="ksend"){const c=CH.find(x=>x.id==="c3");let fin=false;if(c.cur<c.goal){c.cur++;fin=c.cur>=c.goal}s.remove();addPts(20,"kudos enviado");if(fin)setTimeout(()=>{addPts(c.pts,c.t);render()},2300);render()}})}
+load();render();
+})();
+</script>
+
+</body>
+</html>
